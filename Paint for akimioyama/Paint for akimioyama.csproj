@@ -57,6 +57,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Window3.xaml.cs">
+      <DependentUpon>Window3.xaml</DependentUpon>
+    </Compile>
+    <Page Include="atributs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -65,10 +72,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="atributs.xaml.cs">
+      <DependentUpon>atributs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Class1.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Window3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -167,6 +182,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="yellowColor_img.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="format-bold_119110.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="italic_icon_128833.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Underline_icon-icons.com_55789.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Xv2niGZ0Bug.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

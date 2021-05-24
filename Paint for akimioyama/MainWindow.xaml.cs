@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,6 +19,8 @@ using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using Path = System.IO.Path;
 using System.Windows.Ink;
+using System.Security.Cryptography.X509Certificates;
+
 
 namespace Paint_for_akimioyama
 {
@@ -28,10 +32,11 @@ namespace Paint_for_akimioyama
     {
         //bool mb_save = false; // переменна для првоерки сохранения файла 
         string path = @"";
-        Point staart, eend;
+        //Point staart, eend;
         Color color = Colors.Black;
         Brush brush = Brushes.Black;
-        bool fl, yeep;
+        bool yeep, text, raspblitel1;
+        bool mb_save = false;
 
         enum ToolType { Line, Rect, Ellipse, RectSome }
 
@@ -64,8 +69,73 @@ namespace Paint_for_akimioyama
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog myDialog = new OpenFileDialog(); // диологове окно
-            myDialog.Filter = "Файлы bpm (*.bpm)|*.bpm|Файлы jpeg (*.jpeg)|*.jpeg|Все файлы (*.*)|*.*"; // фильтр 
+            myDialog.Filter = "Файлы bpm (*.bpm)|*.bpm|Файлы jpg (*.jpg)|*.jpg|Все файлы (*.*)|*.*"; // фильтр 
 
+            if (myDialog.ShowDialog() == true)  // отображаем
+            {
+                
+            }
+            mb_save = false;
+        }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            if (mb_save == false && path == "")
+            {
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.FileName = "savedimage"; // Имя файла
+                dlg.DefaultExt = ".jpg"; // Расшереение
+                dlg.Filter = "Image (.jpg)|*.jpg"; // Фильтр
+
+
+                Nullable<bool> result = dlg.ShowDialog();
+
+
+                if (result == true)
+                {
+
+                    string filename = dlg.FileName;
+
+                    int margin = (int)InkCan.Margin.Left;
+                    double width = Shirina.ActualWidth;
+                    double height = Visota.ActualHeight;
+
+                    RenderTargetBitmap rtb =
+                    new RenderTargetBitmap((int)width, (int)height, 96d, 96d, PixelFormats.Default);
+
+                    rtb.Render(InkCan);
+
+                    using (FileStream fs = new FileStream(filename, FileMode.Create))
+                    {
+                        BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(rtb));
+                        encoder.Save(fs);
+                    }
+                    mb_save = true;
+                    path = filename;
+                }
+            }
+            else if (mb_save == false && path != "")
+            {
+                double width = Shirina.ActualWidth;
+                double height = Visota.ActualHeight;
+                RenderTargetBitmap rtb =
+                    new RenderTargetBitmap((int)width, (int)height, 96d, 96d, PixelFormats.Default);
+
+                rtb.Render(InkCan);
+
+                using (FileStream fs = new FileStream(path, FileMode.Create))
+                {
+                    BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(rtb));
+                    encoder.Save(fs);
+                }
+                mb_save = true;
+            }
+            else
+            {
+
+            }
         }
 
         private void Save_As_Click(object sender, RoutedEventArgs e)
@@ -85,11 +155,11 @@ namespace Paint_for_akimioyama
                 string filename = dlg.FileName;
 
                 int margin = (int)InkCan.Margin.Left;
-                int width = (int)InkCan.ActualWidth - margin;
-                int height = (int)InkCan.ActualHeight - margin;
+                double width = Shirina.ActualWidth;
+                double height = Visota.ActualHeight;
                 
                 RenderTargetBitmap rtb =
-                new RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
+                new RenderTargetBitmap((int)width, (int)height, 96d, 96d, PixelFormats.Default);
 
                 rtb.Render(InkCan);
 
@@ -99,11 +169,90 @@ namespace Paint_for_akimioyama
                     encoder.Frames.Add(BitmapFrame.Create(rtb));
                     encoder.Save(fs);
                 }
-                //mb_save = true;
+                mb_save = true;
                 path = filename;
             }
         }
 
+        private void Exit(object sender, RoutedEventArgs e)
+        {
+            var response = MessageBox.Show("Вы точно хотите выйти?", "Выход...",
+               MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+            if (response == MessageBoxResult.Yes)
+            {
+                if (mb_save == false)
+                {
+                    var qwe = MessageBox.Show("Хотите сохранить файл?", "Сохранение", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                    if (qwe == MessageBoxResult.No)
+                    {
+                        Application.Current.Shutdown();
+                    }
+                    else
+                    {
+                        if (path == "")
+                        {
+                            SaveFileDialog dlg = new SaveFileDialog();
+                            dlg.FileName = "savedimage"; // Имя файла
+                            dlg.DefaultExt = ".jpg"; // Расшереение
+                            dlg.Filter = "Image (.jpg)|*.jpg"; // Фильтр
+
+
+                            Nullable<bool> result = dlg.ShowDialog();
+
+
+                            if (result == true)
+                            {
+
+                                string filename = dlg.FileName;
+
+                                int margin = (int)InkCan.Margin.Left;
+                                double width = Shirina.ActualWidth;
+                                double height = Visota.ActualHeight;
+
+                                RenderTargetBitmap rtb =
+                                new RenderTargetBitmap((int)width, (int)height, 96d, 96d, PixelFormats.Default);
+
+                                rtb.Render(InkCan);
+
+                                using (FileStream fs = new FileStream(filename, FileMode.Create))
+                                {
+                                    BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+                                    encoder.Frames.Add(BitmapFrame.Create(rtb));
+                                    encoder.Save(fs);
+                                }
+                                Application.Current.Shutdown();
+                            }
+                            
+                        }
+                        else
+                        {
+                            double width = Shirina.ActualWidth;
+                            double height = Visota.ActualHeight;
+                            RenderTargetBitmap rtb =
+                                new RenderTargetBitmap((int)width, (int)height, 96d, 96d, PixelFormats.Default);
+                            using (FileStream fs = new FileStream(path, FileMode.Create))
+                            {
+                                BmpBitmapEncoder encoder = new BmpBitmapEncoder();
+                                encoder.Frames.Add(BitmapFrame.Create(rtb));
+                                encoder.Save(fs);
+                            }
+                            Application.Current.Shutdown();
+                        }
+
+                    }
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+
+            }
+        }
+
+        private void edingmode(object sender, RoutedEventArgs e)
+        {
+            mb_save = false;
+        }
         //Вид...........................................
         private void qqq(object sender, RoutedEventArgs e)
         {
@@ -187,13 +336,12 @@ namespace Paint_for_akimioyama
         {
             yeep = false;
             InkCan.DefaultDrawingAttributes.StylusTip = StylusTip.Ellipse;
+            InkCan.DefaultDrawingAttributes.Color = color;
             InkCan.EditingMode = InkCanvasEditingMode.Ink;
             ToolBar_Kisti.Visibility = Visibility.Visible;
             cbFillShape.Visibility = Visibility.Hidden;
             blackColor.IsChecked = true;
             Kist2.IsChecked = true;
-            
-
         }
         private void Click_Kist1(object sender, RoutedEventArgs e)
         {
@@ -230,6 +378,8 @@ namespace Paint_for_akimioyama
         private void Click_SomeSelect(object sender, RoutedEventArgs e)
         {
             yeep = false;
+            InkCan.DefaultDrawingAttributes.Height = 2;
+            InkCan.DefaultDrawingAttributes.Width = 2;
             InkCan.EditingMode = InkCanvasEditingMode.Select;
             ToolBar_Kisti.Visibility = Visibility.Hidden;
             cbFillShape.Visibility = Visibility.Hidden;
@@ -243,14 +393,16 @@ namespace Paint_for_akimioyama
             //InkCan.EditingMode = InkCanvasEditingMode.EraseByPoint; //EraseByStroke
             ToolBar_Kisti.Visibility = Visibility.Visible;
             cbFillShape.Visibility = Visibility.Hidden;
-            InkCan.DefaultDrawingAttributes.Color = color;
-
         }
         private void Click_kararnah(object sender, RoutedEventArgs e)
         {
             yeep = false;
             ToolBar_Kisti.Visibility = Visibility.Hidden;
             cbFillShape.Visibility = Visibility.Hidden;
+            InkCan.EditingMode = InkCanvasEditingMode.Ink;
+            InkCan.DefaultDrawingAttributes.Color = Colors.DarkGray;
+            InkCan.DefaultDrawingAttributes.Height = 0.5;
+            InkCan.DefaultDrawingAttributes.Width = 0.5;
         }
 
 
@@ -263,7 +415,16 @@ namespace Paint_for_akimioyama
             {
                 SolidColorBrush col = new SolidColorBrush(Color.FromArgb(cd.Color.A, cd.Color.R, cd.Color.G, cd.Color.B));
                 brush = col;
+                Color qwe = new Color();
+                qwe.A = cd.Color.A;
+                qwe.R = cd.Color.R;
+                qwe.G = cd.Color.G;
+                qwe.B = cd.Color.B;
+                color = qwe;
             }
+            blackColor.IsChecked = false;
+            Kist.IsChecked = false;
+            InkCan.EditingMode = InkCanvasEditingMode.None;
         }
         private void Click_Color(object sender, RoutedEventArgs e)
         {
@@ -313,8 +474,7 @@ namespace Paint_for_akimioyama
                     break;
             }
         }
-        
-        
+
         private void inkCanvas_MouseDown(Object sender, MouseEventArgs e)
         {
             if (yeep)
@@ -323,13 +483,42 @@ namespace Paint_for_akimioyama
                     currentShape = new Line();
                 startPoint = e.GetPosition(InkCan);
             }
-        }     
+
+            if (text)
+            {
+                
+                double xx = e.GetPosition(null).X - 57;
+                double yy = e.GetPosition(null).Y - 20;
+
+
+                TextBox tb = new TextBox
+                {
+
+                    Width = 100,
+                    Height = 50,
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(5, 5, 5)),
+                    Margin = new Thickness(xx, yy, 0, 0),
+                };
+                //Добавление контрола tb
+                InkCan.Children.Add(tb);
+
+                //Переключение фокуса на элемент, чтоб можно было сразу ввести текст с клавиатуры
+                tb.Focus();
+
+                text = false;
+                Textt.IsChecked = false;
+                mb_save = false;
+            }
+            if (raspblitel1)
+            {
+                
+            }
+
+        }
         private void inkCanvas_MouseMove(Object sender, MouseEventArgs e)
         {
-            tb.Content = (e.GetPosition(null).X - 60) + ";" + (e.GetPosition(null).Y - 23);
-            
-            
-
+            tb.Content = (e.GetPosition(null).X - 55) + ";" + (e.GetPosition(null).Y - 18);
             if (yeep)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
@@ -353,6 +542,7 @@ namespace Paint_for_akimioyama
                     }
                 }
                 previousMouseEvent = e.LeftButton;
+                mb_save = false;
             }
 
         }
@@ -366,13 +556,22 @@ namespace Paint_for_akimioyama
         private void Clear(object sender, RoutedEventArgs e)
         {
             InkCan.Strokes.Clear();
+            InkCan.Children.Clear();
+            mb_save = false;
         }
 
         private void Click_Atributs(object sender, RoutedEventArgs e)
         {
-            
+            atributs atributs = new atributs();
+            atributs.Owner = this;
+            atributs.ShowDialog();
 
-
+            if (Class1.h != 0 || Class1.w != 0)
+            {
+                InkCan.Height = Class1.h;
+                InkCan.Width = Class1.w;
+            }
+            tb.Visibility = Visibility.Hidden;
         }
 
 
@@ -552,6 +751,37 @@ namespace Paint_for_akimioyama
             InkCan.Children.Add(ellipse);
             currentShape = ellipse;
         }
+
+        private void Print_Click(object sender, RoutedEventArgs e)
+        {
+            PrintDialog pd = new PrintDialog();
+            pd.PageRangeSelection = PageRangeSelection.AllPages;
+            pd.UserPageRangeEnabled = true;
+
+
+            if (pd.ShowDialog() == true)
+            {
+                pd.PrintVisual(InkCan, "Привет");
+            }
+        }
+
+        private void About_Paint(object sender, RoutedEventArgs e)
+        {
+            Window3 taskWindow = new Window3();
+            taskWindow.Owner = this;
+            taskWindow.ShowDialog();
+        }
+
+        private void raspblitel(object sender, RoutedEventArgs e)
+        {
+            raspblitel1 = true;
+        }
+
         //..............................................
+        private void Text_Click(object sender, RoutedEventArgs e)
+        {
+            InkCan.EditingMode = InkCanvasEditingMode.None;
+            text = true;
+        }
     }
 }

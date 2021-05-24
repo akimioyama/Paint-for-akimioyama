@@ -21,12 +21,12 @@
             <MenuItem Header="_Файл">
                 <MenuItem Header="Создать" Click="Create_Click"></MenuItem>
                 <MenuItem Header="Открыть" Click="Open_Click" ></MenuItem>
-                <MenuItem Header="Сохранить"></MenuItem>
+                <MenuItem Header="Сохранить" Click="Save"></MenuItem>
                 <MenuItem Header="Сохранить как..." Click="Save_As_Click"></MenuItem>
                 <Separator />
-                <MenuItem Header="Печать"></MenuItem>
+                <MenuItem Header="Печать" Click="Print_Click"></MenuItem>
                 <Separator />
-                <MenuItem Header="Выход"></MenuItem>
+                <MenuItem Header="Выход" Click="Exit"></MenuItem>
             </MenuItem>
             <MenuItem Header="_Правка" >
                 <MenuItem Header="Вырезать" Command="Cut"></MenuItem>
@@ -40,18 +40,15 @@
                 <MenuItem x:Name="zzzz" Header="Палитра" IsCheckable="True" IsChecked="True" Click="zzz"/>
             </MenuItem>
             <MenuItem Header="Рисунок" >
-                <MenuItem Header="Отразить/перевернуть..."></MenuItem>
-                <MenuItem Header="Растянуть/наклонить..."></MenuItem>
+                <MenuItem Header="Отразить/перевернуть..." Background="#FFDC7070"></MenuItem>
+                <MenuItem Header="Растянуть/наклонить..." Background="#FFDC7070"></MenuItem>
                 <MenuItem Header="Атрибуты" Click="Click_Atributs"></MenuItem>
                 <MenuItem Header="Очистить" Click="Clear"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Палитра" >
-                <MenuItem Header="Ищменить палитру..."></MenuItem>
-            </MenuItem>
             <MenuItem Header="Справка" >
-                <MenuItem Header="Вызов справки" ></MenuItem>
+                <MenuItem Header="Вызов справки" Background="#FFDC7070"></MenuItem>
                 <Separator />
-                <MenuItem Header="О программе"></MenuItem>
+                <MenuItem Header="О программе" Click="About_Paint"></MenuItem>
             </MenuItem>
         </Menu>
         <ToolBarTray x:Name="ToolBarTray_First" Orientation="Vertical" Grid.Row="1">
@@ -62,13 +59,13 @@
                 <RadioButton x:Name="lastik" HorizontalAlignment="Left" ToolTip="Ластик" Click="Click_Lastik">
                     <Image Source="004--2.png" Width="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Left" ToolTip="Выбор цветва" Click="Color_Click">
+                <Button HorizontalAlignment="Left" ToolTip="Выбор цветва" Click="Color_Click">
                     <Image Source="005--3.png" Width="16"/>
-                </RadioButton>
+                </Button>
                 <RadioButton HorizontalAlignment="Left" ToolTip="Карандаш" Click="Click_kararnah">
                     <Image Source="003-icon-1166723.png" Width="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Left" ToolTip="Распылитель">
+                <RadioButton HorizontalAlignment="Left" ToolTip="Распылитель" Background="#FFDC7070" Click="raspblitel">
                     <Image Source="007--5.png" Width="16"/>
                 </RadioButton>
                 <RadioButton x:Name="Linerr" HorizontalAlignment="Left" ToolTip="Линия" Click="Click_Line">
@@ -80,22 +77,22 @@
                 <RadioButton x:Name="Elips" HorizontalAlignment="Left" ToolTip="Элипс" Click="Click_Elips">
                     <Image Source="010-icon-650140.png" Width="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Right" Margin="0,-286,0,0" ToolTip="Заливка">
+                <RadioButton HorizontalAlignment="Right" Margin="0,-286,0,0" ToolTip="Заливка" Background="#FFDC7070">
                     <Image Source="format_color_fill_icon_135591.png" Width="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Right" Margin="0,-242,0,0" ToolTip="Масштаб">
+                <RadioButton HorizontalAlignment="Right" Margin="0,-242,0,0" ToolTip="Масштаб" Background="#FFDC7070">
                     <Image Source="002--1.png" Width="16"/>
                 </RadioButton>
                 <RadioButton x:Name="Kist" HorizontalAlignment="Right" Margin="0,-198,0,0" ToolTip="Кисть" Click="Click_Kist">
                     <Image Source="006--4.png" Width="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Right" Margin="0,-154,0,0" ToolTip="Надпись">
+                <RadioButton x:Name="Textt" HorizontalAlignment="Right" Margin="0,-154,0,0" ToolTip="Надпись" Checked="Text_Click">
                     <Image Source="008-icon-1379802.png" Width="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Right" Margin="0,-110,0,0" ToolTip="Кривая">
+                <RadioButton HorizontalAlignment="Right" Margin="0,-110,0,0" ToolTip="Кривая" Background="#FFDC7070">
                     <Image Source="curve_96294.png" Width="16" Height="16"/>
                 </RadioButton>
-                <RadioButton HorizontalAlignment="Right" Margin="0,-66,0,0" ToolTip="Многоугольник">
+                <RadioButton HorizontalAlignment="Right" Margin="0,-66,0,0" ToolTip="Многоугольник" Background="#FFDC7070">
                     <Image Source="polygon_5389.png" Width="16"/>
                 </RadioButton>
                 <RadioButton x:Name="RectSome" HorizontalAlignment="Right" Margin="0,-22,0,0" ToolTip="Скругленный прямоугольник" Click="Click_RegtanglSome">
@@ -155,19 +152,19 @@
         <Label x:Name="tb" Grid.Column="1" HorizontalAlignment="Left" Margin="271,3,0,0" Grid.Row="2" VerticalAlignment="Top" Width="102" Height="26"/>
         <Grid Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="5"></RowDefinition>
-                <RowDefinition x:Name="Visota"></RowDefinition>
+                <RowDefinition Height="0"></RowDefinition>
+                <RowDefinition x:Name="Visota"/>
                 <RowDefinition Height="5" ></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="0"></ColumnDefinition>
                 <ColumnDefinition x:Name="Shirina"></ColumnDefinition>
                 <ColumnDefinition Width="5" ></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <InkCanvas x:Name="InkCan" EditingMode="None" MouseDown="inkCanvas_MouseDown" 
                        MouseMove="inkCanvas_MouseMove" MouseUp="inkCanvas_MouseUp" 
                        Grid.Column="1" Grid.Row="1" ScrollViewer.CanContentScroll="True" 
-                       ScrollViewer.HorizontalScrollBarVisibility="Visible" MinHeight="1" MinWidth="1" 
+                       ScrollViewer.HorizontalScrollBarVisibility="Visible" MinHeight="1" MinWidth="1" EditingModeChanged="edingmode" 
                        >
                 <InkCanvas.ContextMenu>
                     <ContextMenu ForceCursor="True">
