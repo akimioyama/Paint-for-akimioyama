@@ -134,7 +134,6 @@ namespace Paint_for_akimioyama
             }
             else
             {
-
             }
         }
 
@@ -248,7 +247,6 @@ namespace Paint_for_akimioyama
 
             }
         }
-
         private void edingmode(object sender, RoutedEventArgs e)
         {
             mb_save = false;
